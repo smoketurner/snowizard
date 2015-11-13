@@ -1,7 +1,5 @@
 package com.ge.snowizard.integration;
 
-import io.dropwizard.testing.ResourceHelpers;
-import io.dropwizard.testing.junit.DropwizardAppRule;
 import java.net.URI;
 import javax.ws.rs.core.UriBuilder;
 import org.junit.After;
@@ -11,6 +9,8 @@ import org.junit.Test;
 import com.ge.snowizard.application.SnowizardApplication;
 import com.ge.snowizard.application.config.SnowizardConfiguration;
 import com.ge.snowizard.client.SnowizardClient;
+import io.dropwizard.testing.ResourceHelpers;
+import io.dropwizard.testing.junit.DropwizardAppRule;
 
 public class SnowizardClientIT {
 
@@ -36,23 +36,23 @@ public class SnowizardClientIT {
 
     @Test
     public void testClientGetId() throws Exception {
-        final long startTime = System.currentTimeMillis();
+        final long startTime = System.nanoTime();
         for (int i = 0; i < COUNT; i++) {
             client.getId();
         }
 
-        final long endTime = System.currentTimeMillis();
+        final long delta = (System.nanoTime() - startTime) / 1000000;
         System.out.println(String.format("generated %d (serially) ids in %d ms",
-                COUNT, (endTime - startTime)));
+                COUNT, delta));
     }
 
     @Test
     public void testClientGetIds() throws Exception {
-        final long startTime = System.currentTimeMillis();
+        final long startTime = System.nanoTime();
         client.getIds(COUNT);
 
-        final long endTime = System.currentTimeMillis();
+        final long delta = (System.nanoTime() - startTime) / 1000000;
         System.out.println(String.format("generated %d (parallel) ids in %d ms",
-                COUNT, (endTime - startTime)));
+                COUNT, delta));
     }
 }
