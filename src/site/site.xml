@@ -9,7 +9,7 @@
     <custom>
         <fluidoSkin>
             <gitHub>
-                <projectId>GeneralElectric/snowizard</projectId>
+                <projectId>smoketurner/snowizard</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>red</ribbonColor>
             </gitHub>
