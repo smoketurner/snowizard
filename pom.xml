@@ -294,6 +294,11 @@
                         <format>xml</format>
                     </formats>
                     <aggregate>true</aggregate>
+                    <instrumentation>
+                        <ignores>
+                            <ignore>com.ge.snowizard.api.protos.*</ignore>
+                        </ignores>
+                    </instrumentation>
                 </configuration>
             </plugin>
             <plugin>
