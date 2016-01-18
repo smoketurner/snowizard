@@ -1,12 +1,12 @@
 package com.ge.snowizard.application.config;
 
-import io.dropwizard.Configuration;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.dropwizard.Configuration;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class SnowizardConfiguration extends Configuration {
     private static final int MAX_ID = 1024;
@@ -23,9 +23,6 @@ public class SnowizardConfiguration extends Configuration {
 
     @JsonProperty
     private boolean validate_user_agent = false;
-
-    @JsonProperty
-    private boolean enable_cors = false;
 
     @Valid
     @NotNull
@@ -45,11 +42,6 @@ public class SnowizardConfiguration extends Configuration {
     @JsonProperty("validate_user_agent")
     public boolean validateUserAgent() {
         return validate_user_agent;
-    }
-
-    @JsonProperty("enable_cors")
-    public boolean isCORSEnabled() {
-        return enable_cors;
     }
 
     @JsonProperty

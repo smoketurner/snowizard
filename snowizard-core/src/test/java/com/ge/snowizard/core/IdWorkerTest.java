@@ -19,14 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
-import com.ge.snowizard.core.IdWorker;
 import com.ge.snowizard.exceptions.InvalidSystemClock;
 import com.ge.snowizard.exceptions.InvalidUserAgentError;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class IdWorkerTest {
     private static final long WORKER_MASK = 0x000000000001F000L;
@@ -34,9 +33,10 @@ public class IdWorkerTest {
     private static final long TIMESTAMP_MASK = 0xFFFFFFFFFFC00000L;
 
     class EasyTimeWorker extends IdWorker {
-        public List<Long> queue = Lists.newArrayList();
+        public List<Long> queue = new ArrayList<>();
 
-        public EasyTimeWorker(final Integer workerId, final Integer datacenterId) {
+        public EasyTimeWorker(final Integer workerId,
+                final Integer datacenterId) {
             super(workerId, datacenterId);
         }
 
@@ -57,7 +57,8 @@ public class IdWorkerTest {
     class WakingIdWorker extends EasyTimeWorker {
         public int slept = 0;
 
-        public WakingIdWorker(final Integer workerId, final Integer datacenterId) {
+        public WakingIdWorker(final Integer workerId,
+                final Integer datacenterId) {
             super(workerId, datacenterId);
         }
 
@@ -161,8 +162,8 @@ public class IdWorkerTest {
         final IdWorker worker = new IdWorker(workerId, datacenterId);
         for (int i = 0; i < 1000; i++) {
             Long id = worker.nextId();
-            assertThat((id & WORKER_MASK) >> 12).isEqualTo(
-                    Long.valueOf(workerId));
+            assertThat((id & WORKER_MASK) >> 12)
+                    .isEqualTo(Long.valueOf(workerId));
         }
     }
 
@@ -172,8 +173,8 @@ public class IdWorkerTest {
         final Integer datacenterId = 0x1F;
         final IdWorker worker = new IdWorker(workerId, datacenterId);
         final Long id = worker.nextId();
-        assertThat((id & DATACENTER_MASK) >> 17).isEqualTo(
-                Long.valueOf(datacenterId));
+        assertThat((id & DATACENTER_MASK) >> 17)
+                .isEqualTo(Long.valueOf(datacenterId));
     }
 
     @Test
@@ -183,8 +184,8 @@ public class IdWorkerTest {
             Long timestamp = System.currentTimeMillis();
             worker.addTimestamp(timestamp);
             Long id = worker.nextId();
-            assertThat((id & TIMESTAMP_MASK) >> 22).isEqualTo(
-                    timestamp - IdWorker.TWEPOCH);
+            assertThat((id & TIMESTAMP_MASK) >> 22)
+                    .isEqualTo(timestamp - IdWorker.TWEPOCH);
         }
     }
 
@@ -199,8 +200,8 @@ public class IdWorkerTest {
 
         for (Long i = startSequence; i < endSequence; i++) {
             Long id = worker.nextId();
-            assertThat((id & WORKER_MASK) >> 12).isEqualTo(
-                    Long.valueOf(workerId));
+            assertThat((id & WORKER_MASK) >> 12)
+                    .isEqualTo(Long.valueOf(workerId));
         }
     }
 
@@ -246,7 +247,7 @@ public class IdWorkerTest {
     @Test
     public void testGenerateUniqueIds() throws Exception {
         final IdWorker worker = new IdWorker(31, 31);
-        final Set<Long> ids = Sets.newHashSet();
+        final Set<Long> ids = new HashSet<>();
         final int count = 2000000;
         for (int i = 0; i < count; i++) {
             Long id = worker.nextId();

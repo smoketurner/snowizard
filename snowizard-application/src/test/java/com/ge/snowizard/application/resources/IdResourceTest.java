@@ -223,6 +223,29 @@ public class IdResourceTest {
     }
 
     @Test
+    public void testGetIdAsProtobufNullCount() throws Exception {
+        final long id = 100L;
+        when(worker.getId(AGENT)).thenReturn(id);
+
+        final String count = null;
+        final Response response = resources.client().target("/")
+                .register(new ProtocolBufferMessageBodyProvider())
+                .queryParam("count", count)
+                .request(ProtocolBufferMediaType.APPLICATION_PROTOBUF)
+                .header(HttpHeaders.USER_AGENT, AGENT).get();
+
+        final SnowizardResponse actual = response
+                .readEntity(SnowizardResponse.class);
+
+        final SnowizardResponse expected = SnowizardResponse.newBuilder()
+                .addId(id).build();
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        assertThat(actual).isEqualTo(expected);
+        verify(worker).getId(AGENT);
+    }
+
+    @Test
     public void testGetIdAsProtobufInvalidAgent() throws Exception {
         when(worker.getId(AGENT)).thenThrow(new InvalidUserAgentError());
 

@@ -1,15 +1,17 @@
 package com.ge.snowizard.api;
 
-import io.dropwizard.jackson.JsonSnakeCase;
 import java.util.Objects;
 import javax.annotation.concurrent.Immutable;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import io.dropwizard.jackson.JsonSnakeCase;
 
 @Immutable
 @JsonSnakeCase
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Id {
 
     private final long id;

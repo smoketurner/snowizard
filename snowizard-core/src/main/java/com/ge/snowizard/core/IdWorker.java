@@ -15,8 +15,6 @@
  */
 package com.ge.snowizard.core;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkArgument;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -55,7 +53,7 @@ public class IdWorker {
     private final MetricRegistry registry;
     private final Counter idsCounter;
     private final Counter exceptionsCounter;
-    private final Map<String, Counter> agentCounters = new ConcurrentHashMap<String, Counter>();
+    private final Map<String, Counter> agentCounters = new ConcurrentHashMap<>();
     private final int workerId;
     private final int datacenterId;
     private final boolean validateUserAgent;
@@ -142,40 +140,34 @@ public class IdWorker {
             final long startSequence, final boolean validateUserAgent,
             final MetricRegistry registry) {
 
-        checkNotNull(workerId);
-        checkArgument(workerId >= 0, String.format(
-                "worker Id can't be greater than %d or less than 0",
-                MAX_WORKER_ID));
-        checkArgument(workerId <= MAX_WORKER_ID, String.format(
-                "worker Id can't be greater than %d or less than 0",
-                MAX_WORKER_ID));
+        exceptionsCounter = registry
+                .counter(MetricRegistry.name(IdWorker.class, "exceptions"));
+        idsCounter = registry
+                .counter(MetricRegistry.name(IdWorker.class, "ids_generated"));
 
-        checkNotNull(datacenterId);
-        checkArgument(datacenterId >= 0, String.format(
-                "datacenter Id can't be greater than %d or less than 0",
-                MAX_DATACENTER_ID));
-        checkArgument(datacenterId <= MAX_DATACENTER_ID, String.format(
-                "datacenter Id can't be greater than %d or less than 0",
-                MAX_DATACENTER_ID));
-
-        checkNotNull(startSequence);
+        if (workerId > MAX_WORKER_ID || workerId < 0) {
+            exceptionsCounter.inc();
+            throw new IllegalArgumentException(String.format(
+                    "worker Id can't be greater than %d or less than 0",
+                    MAX_WORKER_ID));
+        }
+        if (datacenterId > MAX_DATACENTER_ID || datacenterId < 0) {
+            exceptionsCounter.inc();
+            throw new IllegalArgumentException(String.format(
+                    "datacenter Id can't be greater than %d or less than 0",
+                    MAX_DATACENTER_ID));
+        }
 
         this.workerId = workerId;
         this.datacenterId = datacenterId;
         this.validateUserAgent = validateUserAgent;
         this.registry = registry;
+        this.sequence = new AtomicLong(startSequence);
 
         LOGGER.info(
                 "worker starting. timestamp left shift {}, datacenter id bits {}, worker id bits {}, sequence bits {}, workerid {}",
                 TIMESTAMP_LEFT_SHIFT, DATACENTER_ID_BITS, WORKER_ID_BITS,
                 SEQUENCE_BITS, workerId);
-
-        sequence = new AtomicLong(startSequence);
-
-        exceptionsCounter = registry.counter(MetricRegistry.name(
-                IdWorker.class, "exceptions"));
-        idsCounter = registry.counter(MetricRegistry.name(IdWorker.class,
-                "ids_generated"));
     }
 
     /**
@@ -189,8 +181,8 @@ public class IdWorker {
      * @throws InvalidSystemClock
      *             When the system clock is moving backward
      */
-    public long getId(final String agent) throws InvalidUserAgentError,
-            InvalidSystemClock {
+    public long getId(final String agent)
+            throws InvalidUserAgentError, InvalidSystemClock {
         if (!isValidUserAgent(agent)) {
             exceptionsCounter.inc();
             throw new InvalidUserAgentError();
@@ -266,10 +258,9 @@ public class IdWorker {
             LOGGER.error(
                     "clock is moving backwards. Rejecting requests until {}",
                     prevTimestamp);
-            throw new InvalidSystemClock(
-                    String.format(
-                            "Clock moved backwards. Refusing to generate id for %d milliseconds",
-                            (prevTimestamp - timestamp)));
+            throw new InvalidSystemClock(String.format(
+                    "Clock moved backwards. Refusing to generate id for %d milliseconds",
+                    (prevTimestamp - timestamp)));
         }
 
         if (prevTimestamp == timestamp) {
@@ -342,8 +333,8 @@ public class IdWorker {
     protected void genCounter(final String agent) {
         idsCounter.inc();
         if (!agentCounters.containsKey(agent)) {
-            agentCounters.put(agent, registry.counter(MetricRegistry.name(
-                    IdWorker.class, "ids_generated_" + agent)));
+            agentCounters.put(agent, registry.counter(MetricRegistry
+                    .name(IdWorker.class, "ids_generated_" + agent)));
         }
         agentCounters.get(agent).inc();
     }

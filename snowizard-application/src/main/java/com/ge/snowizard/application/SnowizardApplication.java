@@ -1,14 +1,9 @@
 package com.ge.snowizard.application;
 
-import java.util.EnumSet;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
 import com.ge.snowizard.application.config.SnowizardConfiguration;
 import com.ge.snowizard.application.exceptions.SnowizardExceptionMapper;
-import com.ge.snowizard.application.filter.CharsetResponseFilter;
 import com.ge.snowizard.application.health.EmptyHealthCheck;
 import com.ge.snowizard.application.resources.IdResource;
 import com.ge.snowizard.application.resources.PingResource;
@@ -56,16 +51,6 @@ public class SnowizardApplication extends Application<SnowizardConfiguration> {
 
         environment.jersey().register(SnowizardExceptionMapper.class);
         environment.jersey().register(ProtocolBufferMessageBodyProvider.class);
-        environment.jersey().register(CharsetResponseFilter.class);
-
-        if (config.isCORSEnabled()) {
-            final FilterRegistration.Dynamic filter = environment.servlets()
-                    .addFilter("CrossOriginFilter", CrossOriginFilter.class);
-            filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST),
-                    true, "/*");
-            filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM,
-                    "GET");
-        }
 
         final IdWorker worker = new IdWorker(config.getWorkerId(),
                 config.getDatacenterId(), 0L, config.validateUserAgent(),
@@ -73,21 +58,12 @@ public class SnowizardApplication extends Application<SnowizardConfiguration> {
 
         environment.metrics().register(
                 MetricRegistry.name(SnowizardApplication.class, "worker_id"),
-                new Gauge<Integer>() {
-                    @Override
-                    public Integer getValue() {
-                        return config.getWorkerId();
-                    }
-                });
+                (Gauge<Integer>) config::getWorkerId);
 
-        environment.metrics().register(MetricRegistry
-                .name(SnowizardApplication.class, "datacenter_id"),
-                new Gauge<Integer>() {
-                    @Override
-                    public Integer getValue() {
-                        return config.getDatacenterId();
-                    }
-                });
+        environment.metrics().register(
+                MetricRegistry.name(SnowizardApplication.class,
+                        "datacenter_id"),
+                (Gauge<Integer>) config::getDatacenterId);
 
         // health check
         environment.healthChecks().register("empty", new EmptyHealthCheck());

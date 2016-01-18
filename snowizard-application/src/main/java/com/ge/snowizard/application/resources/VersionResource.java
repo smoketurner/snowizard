@@ -1,12 +1,12 @@
 package com.ge.snowizard.application.resources;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import io.dropwizard.jersey.caching.CacheControl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +34,7 @@ public class VersionResource {
      */
     @VisibleForTesting
     public VersionResource(@Nonnull final String version) {
-        this.version = Preconditions.checkNotNull(version);
+        this.version = Objects.requireNonNull(version);
     }
 
     @GET

@@ -1,7 +1,9 @@
 package com.ge.snowizard.application.resources;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -12,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.server.JSONP;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.valuehandling.UnwrapValidatedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.codahale.metrics.annotation.Timed;
@@ -22,8 +23,6 @@ import com.ge.snowizard.application.exceptions.SnowizardException;
 import com.ge.snowizard.core.IdWorker;
 import com.ge.snowizard.exceptions.InvalidSystemClock;
 import com.ge.snowizard.exceptions.InvalidUserAgentError;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import io.dropwizard.jersey.caching.CacheControl;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.jersey.params.IntParam;
@@ -46,9 +45,10 @@ public class IdResource {
      * Constructor
      *
      * @param worker
+     *            ID worker
      */
     public IdResource(final IdWorker worker) {
-        this.worker = checkNotNull(worker);
+        this.worker = Objects.requireNonNull(worker);
     }
 
     /**
@@ -145,11 +145,11 @@ public class IdResource {
     public SnowizardResponse getIdAsProtobuf(
             @ApiParam(value = "user-agent",
                       required = true) @HeaderParam(HttpHeaders.USER_AGENT) final @NotEmpty String agent,
-            @QueryParam("count") final @UnwrapValidatedValue Optional<IntParam> count) {
+            @QueryParam("count") @DefaultValue("1") final IntParam count) {
 
-        final List<Long> ids = Lists.newArrayList();
-        if (count.isPresent()) {
-            for (int i = 0; i < count.get().get(); i++) {
+        final List<Long> ids = new ArrayList<>();
+        if (count != null) {
+            for (int i = 0; i < count.get(); i++) {
                 ids.add(getId(agent));
             }
         } else {
