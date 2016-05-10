@@ -11,9 +11,12 @@ import com.ge.snowizard.application.config.SnowizardConfiguration;
 import com.ge.snowizard.client.SnowizardClient;
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
+import io.dropwizard.util.Duration;
 
 public class SnowizardClientIT {
 
+    private static final long NANOS_IN_MILLIS = Duration.milliseconds(1)
+            .toNanoseconds();
     private static final int COUNT = 1000;
     private SnowizardClient client;
 
@@ -41,7 +44,7 @@ public class SnowizardClientIT {
             client.getId();
         }
 
-        final long delta = (System.nanoTime() - startTime) / 1000000;
+        final long delta = (System.nanoTime() - startTime) / NANOS_IN_MILLIS;
         System.out.println(String.format("generated %d (serially) ids in %d ms",
                 COUNT, delta));
     }
@@ -51,7 +54,7 @@ public class SnowizardClientIT {
         final long startTime = System.nanoTime();
         client.getIds(COUNT);
 
-        final long delta = (System.nanoTime() - startTime) / 1000000;
+        final long delta = (System.nanoTime() - startTime) / NANOS_IN_MILLIS;
         System.out.println(String.format("generated %d (parallel) ids in %d ms",
                 COUNT, delta));
     }
