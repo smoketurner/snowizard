@@ -1,21 +1,19 @@
-FROM java:openjdk-7-jre
-MAINTAINER Justin Plock <justin@plock.net>
+FROM java:openjdk-8-jre-alpine
+MAINTAINER Justin Plock <jplock@smoketurner.com>
 
-RUN mkdir -p /opt/snowizard /var/log/snowizard
-RUN wget -q -O /opt/snowizard/snowizard.jar http://repo.maven.apache.org/maven2/com/ge/snowizard/snowizard-application/1.7.0/snowizard-application-1.7.0.jar
+ARG VERSION="1.9.2-SNAPSHOT"
 
-ADD ./snowizard-application/snowizard.upstart /etc/init/snowizard.conf
-ADD ./snowizard-application/snowizard.yml /etc/snowizard.yml
-ADD ./snowizard-application/snowizard.jvm.conf /etc/snowizard.jvm.conf
+LABEL name="snowizard" version=$VERSION
 
-ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
+ENV DW_DATACENTER_ID 1
+ENV DW_WORKER_ID 1
 
-# Snowizard port
-EXPOSE 8080
-# Administration port
-EXPOSE 8180
-
+RUN mkdir -p /opt/snowizard
 WORKDIR /opt/snowizard
+COPY ./snowizard.jar /opt/snowizard
+COPY ./snowizard-application/snowizard.yml /opt/snowizard/snowizard.yml
+VOLUME ["/opt/snowizard"]
 
+EXPOSE 8080 8180
 ENTRYPOINT ["java", "-d64", "-server", "-jar", "snowizard.jar"]
-CMD ["server", "/etc/snowizard.yml"]
+CMD ["server", "snowizard.yml"]
