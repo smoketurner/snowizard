@@ -8,12 +8,25 @@ LABEL name="snowizard" version=$VERSION
 ENV DW_DATACENTER_ID 1
 ENV DW_WORKER_ID 1
 
-RUN mkdir -p /opt/snowizard
-WORKDIR /opt/snowizard
-COPY ./snowizard.jar /opt/snowizard
-COPY ./snowizard-application/snowizard.yml /opt/snowizard/snowizard.yml
-VOLUME ["/opt/snowizard"]
+ENV PORT 8080
 
-EXPOSE 8080 8180
-ENTRYPOINT ["java", "-d64", "-server", "-jar", "snowizard.jar"]
-CMD ["server", "snowizard.yml"]
+WORKDIR /app
+
+COPY pom.xml .
+
+RUN apk add --no-cache openjdk8="$JAVA_ALPINE_VERSION" && \
+    mvnw install
+
+COPY . .
+
+RUN mvnw package -Dmaven.javadoc.skip=true -Dmaven.test.skip=true -Dmaven.source.skip=true && \
+    rm snowizard-application/target/original-*.jar && \
+    mv snowizard-application/target/*.jar app.jar && \
+    rm -rf /root/.m2 && \
+    rm -rf snowizard-application/target && \
+    rm -rf snowizard-client/target && \
+    rm -rf snowizard-api/target && \
+    rm -rf snowizard-core/target && \
+    apk del openjdk8
+
+CMD java $JAVA_OPTS -Ddw.server.applicationConnectors[0].port=$PORT -jar app.jar server config.yml

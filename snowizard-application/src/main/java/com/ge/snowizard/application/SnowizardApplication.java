@@ -12,7 +12,7 @@ import com.ge.snowizard.core.IdWorker;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
-import io.dropwizard.jersey.protobuf.ProtocolBufferMessageBodyProvider;
+import io.dropwizard.jersey.protobuf.ProtobufBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
@@ -43,6 +43,8 @@ public class SnowizardApplication extends Application<SnowizardConfiguration> {
                 return configuration.getSwagger();
             }
         });
+
+        bootstrap.addBundle(new ProtobufBundle());
     }
 
     @Override
@@ -50,11 +52,11 @@ public class SnowizardApplication extends Application<SnowizardConfiguration> {
             final Environment environment) throws Exception {
 
         environment.jersey().register(SnowizardExceptionMapper.class);
-        environment.jersey().register(ProtocolBufferMessageBodyProvider.class);
 
-        final IdWorker worker = new IdWorker(config.getWorkerId(),
-                config.getDatacenterId(), 0L, config.validateUserAgent(),
-                environment.metrics());
+        final IdWorker worker = IdWorker
+                .builder(config.getWorkerId(), config.getDatacenterId())
+                .withMetricRegistry(environment.metrics())
+                .withValidateUserAgent(config.validateUserAgent()).build();
 
         environment.metrics().register(
                 MetricRegistry.name(SnowizardApplication.class, "worker_id"),

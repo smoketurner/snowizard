@@ -8,7 +8,7 @@ import io.dropwizard.client.JerseyClientConfiguration;
 public class SnowizardClientConfiguration extends JerseyClientConfiguration {
 
     @NotNull
-    private URI uri = URI.create("http://localhost:8080");
+    private URI uri = URI.create("http://127.0.0.1:8080");
 
     public URI getUri() {
         return uri;

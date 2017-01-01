@@ -6,11 +6,9 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.HttpHeaders;
-import org.glassfish.jersey.client.ClientConfig;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import com.ge.snowizard.api.protos.SnowizardProtos.SnowizardResponse;
@@ -61,18 +59,19 @@ public class SnowizardClientTest {
             new ProtocolBufferMessageBodyProvider(), new IdResource(),
             new PingResource(), new VersionResource());
 
-    private SnowizardClient client;
+    private static SnowizardClient client;
 
-    @Before
-    public void setUp() {
-        final ClientConfig config = new ClientConfig(
-                ProtocolBufferMessageBodyProvider.class);
-        client = new SnowizardClient(ClientBuilder.newClient(config),
-                resources.baseUri());
+    @BeforeClass
+    public static void setUp() {
+        final SnowizardClientBuilder builder = new SnowizardClientBuilder(
+                resources.getEnvironment());
+        final SnowizardClientConfiguration configuration = new SnowizardClientConfiguration();
+        configuration.setUri(resources.baseUri());
+        client = builder.build(configuration);
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         client.close();
     }
 

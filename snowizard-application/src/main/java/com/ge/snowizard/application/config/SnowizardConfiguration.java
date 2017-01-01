@@ -13,35 +13,46 @@ public class SnowizardConfiguration extends Configuration {
 
     @Min(1)
     @Max(MAX_ID)
-    @JsonProperty
-    private int worker_id = 1;
+    private int workerId = 1;
 
     @Min(1)
     @Max(MAX_ID)
-    @JsonProperty
-    private int datacenter_id = 1;
+    private int datacenterId = 1;
 
-    @JsonProperty
-    private boolean validate_user_agent = false;
+    private boolean validateUserAgent = false;
 
     @Valid
     @NotNull
-    @JsonProperty
     public final SwaggerBundleConfiguration swagger = new SwaggerBundleConfiguration();
 
     @JsonProperty("worker_id")
     public int getWorkerId() {
-        return worker_id;
+        return workerId;
+    }
+
+    @JsonProperty("worker_id")
+    public void setWorkerId(final int workerId) {
+        this.workerId = workerId;
     }
 
     @JsonProperty("datacenter_id")
     public int getDatacenterId() {
-        return datacenter_id;
+        return datacenterId;
+    }
+
+    @JsonProperty("datacenter_id")
+    public void setDatacenterId(final int datacenterId) {
+        this.datacenterId = datacenterId;
     }
 
     @JsonProperty("validate_user_agent")
     public boolean validateUserAgent() {
-        return validate_user_agent;
+        return validateUserAgent;
+    }
+
+    @JsonProperty("validate_user_agent")
+    public void setValidateUserAgent(boolean validateUserAgent) {
+        this.validateUserAgent = validateUserAgent;
     }
 
     @JsonProperty

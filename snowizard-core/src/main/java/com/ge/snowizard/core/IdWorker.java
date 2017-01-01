@@ -16,6 +16,7 @@
 package com.ge.snowizard.core;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
@@ -64,11 +65,9 @@ public class IdWorker {
     /**
      * Constructor
      * 
-     * @param workerId
-     *            Worker ID
-     * @param datacenterId
-     *            Datacenter ID
+     * @deprecated use {@link Builder} instead
      */
+    @Deprecated
     public IdWorker(final int workerId, final int datacenterId) {
         this(workerId, datacenterId, 0L, true, new MetricRegistry());
     }
@@ -76,13 +75,9 @@ public class IdWorker {
     /**
      * Constructor
      * 
-     * @param workerId
-     *            Worker ID
-     * @param datacenterId
-     *            Datacenter ID
-     * @param startSequence
-     *            Starting sequence number
+     * @deprecated use {@link Builder} instead
      */
+    @Deprecated
     public IdWorker(final int workerId, final int datacenterId,
             final long startSequence) {
         this(workerId, datacenterId, startSequence, true, new MetricRegistry());
@@ -91,13 +86,9 @@ public class IdWorker {
     /**
      * Constructor
      * 
-     * @param workerId
-     *            Worker ID
-     * @param datacenterId
-     *            Datacenter ID
-     * @param validateUserAgent
-     *            Whether to validate the User-Agent headers or not
+     * @deprecated use {@link Builder} instead
      */
+    @Deprecated
     public IdWorker(final int workerId, final int datacenterId,
             final boolean validateUserAgent) {
         this(workerId, datacenterId, 0L, validateUserAgent,
@@ -107,15 +98,9 @@ public class IdWorker {
     /**
      * Constructor
      * 
-     * @param workerId
-     *            Worker ID
-     * @param datacenterId
-     *            Datacenter ID
-     * @param startSequence
-     *            Starting sequence number
-     * @param validateUserAgent
-     *            Whether to validate the User-Agent headers or not
+     * @deprecated use {@link Builder} instead
      */
+    @Deprecated
     public IdWorker(final int workerId, final int datacenterId,
             final long startSequence, final boolean validateUserAgent) {
         this(workerId, datacenterId, startSequence, validateUserAgent,
@@ -136,7 +121,7 @@ public class IdWorker {
      * @param registry
      *            Metric Registry
      */
-    public IdWorker(final int workerId, final int datacenterId,
+    private IdWorker(final int workerId, final int datacenterId,
             final long startSequence, final boolean validateUserAgent,
             final MetricRegistry registry) {
 
@@ -168,6 +153,50 @@ public class IdWorker {
                 "worker starting. timestamp left shift {}, datacenter id bits {}, worker id bits {}, sequence bits {}, workerid {}",
                 TIMESTAMP_LEFT_SHIFT, DATACENTER_ID_BITS, WORKER_ID_BITS,
                 SEQUENCE_BITS, workerId);
+    }
+
+    public static final Builder builder(final int workerId,
+            final int datacenterId) {
+        return new Builder(workerId, datacenterId);
+    }
+
+    public static final class Builder {
+        private final int workerId;
+        private final int datacenterId;
+        private long startSequence = 0L;
+        private boolean validateUserAgent = true;
+        private MetricRegistry registry = new MetricRegistry();
+
+        /**
+         * Constructor
+         *
+         * @param workerId
+         * @param datacenterId
+         */
+        public Builder(final int workerId, final int datacenterId) {
+            this.workerId = workerId;
+            this.datacenterId = datacenterId;
+        }
+
+        public Builder withStartSequence(final long startSequence) {
+            this.startSequence = startSequence;
+            return this;
+        }
+
+        public Builder withValidateUserAgent(final boolean validateUserAgent) {
+            this.validateUserAgent = validateUserAgent;
+            return this;
+        }
+
+        public Builder withMetricRegistry(final MetricRegistry registry) {
+            this.registry = Objects.requireNonNull(registry);
+            return this;
+        }
+
+        public IdWorker build() {
+            return new IdWorker(workerId, datacenterId, startSequence,
+                    validateUserAgent, registry);
+        }
     }
 
     /**
