@@ -1,0 +1,5 @@
+com.smoketurner.snowizard.application
+com.smoketurner.snowizard.application.config
+com.smoketurner.snowizard.application.exceptions
+com.smoketurner.snowizard.application.health
+com.smoketurner.snowizard.application.resources
