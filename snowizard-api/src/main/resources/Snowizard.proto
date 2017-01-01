@@ -1,6 +1,6 @@
 package snowizard;
 
-option java_package = "com.ge.snowizard.api.protos";
+option java_package = "com.smoketurner.snowizard.api.protos";
 option java_outer_classname = "SnowizardProtos";
 option optimize_for = SPEED;
 

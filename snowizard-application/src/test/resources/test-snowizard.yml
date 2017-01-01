@@ -7,13 +7,11 @@ worker_id: 1
 # Swagger-specific options.
 swagger:
 
-  resourcePackage: com.ge.snowizard.application.resources
+  resourcePackage: com.smoketurner.snowizard.application.resources
 
 server:
-
-  applicationConnectors:
-    - type: http
-      port: 0
-  adminConnectors:
-    - type: http
-      port: 0
+  type: simple
+  applicationContextPath: /
+  connector:
+    type: http
+    port: 0
