@@ -13,17 +13,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.smoketurner.snowizard</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>snowizard-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.smoketurner.snowizard</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>snowizard-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.smoketurner.snowizard</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>snowizard-client</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -36,6 +36,11 @@
             <groupId>com.smoketurner</groupId>
             <artifactId>dropwizard-swagger</artifactId>
             <version>1.0.5-2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.smoketurner.dropwizard</groupId>
+            <artifactId>zipkin-core</artifactId>
+            <version>1.0.5-4</version>
         </dependency>
     </dependencies>
 

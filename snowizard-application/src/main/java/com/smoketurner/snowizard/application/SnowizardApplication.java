@@ -2,6 +2,8 @@ package com.smoketurner.snowizard.application;
 
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.MetricRegistry;
+import com.smoketurner.dropwizard.zipkin.ZipkinBundle;
+import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import com.smoketurner.snowizard.application.config.SnowizardConfiguration;
 import com.smoketurner.snowizard.application.exceptions.SnowizardExceptionMapper;
 import com.smoketurner.snowizard.application.health.EmptyHealthCheck;
@@ -36,6 +38,7 @@ public class SnowizardApplication extends Application<SnowizardConfiguration> {
                 bootstrap.getConfigurationSourceProvider(),
                 new EnvironmentVariableSubstitutor(false)));
 
+        // add Swagger bundle
         bootstrap.addBundle(new SwaggerBundle<SnowizardConfiguration>() {
             @Override
             protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(
@@ -44,12 +47,25 @@ public class SnowizardApplication extends Application<SnowizardConfiguration> {
             }
         });
 
+        // add Zipkin bundle
+        bootstrap
+                .addBundle(new ZipkinBundle<SnowizardConfiguration>(getName()) {
+                    @Override
+                    public ZipkinFactory getZipkinFactory(
+                            final SnowizardConfiguration configuration) {
+                        return configuration.getZipkin();
+                    }
+                });
+
         bootstrap.addBundle(new ProtobufBundle());
     }
 
     @Override
     public void run(final SnowizardConfiguration config,
             final Environment environment) throws Exception {
+
+        // set up zipkin tracing
+        config.getZipkin().build(environment);
 
         environment.jersey().register(SnowizardExceptionMapper.class);
 

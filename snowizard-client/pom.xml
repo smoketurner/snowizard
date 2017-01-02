@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.smoketurner.snowizard</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>snowizard-api</artifactId>
             <version>${project.version}</version>
         </dependency>

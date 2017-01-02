@@ -18,6 +18,13 @@ swagger:
   license: BSD
   licenseUrl: http://opensource.org/licenses/BSD-3-Clause
 
+# Zipkin-specific options.
+zipkin:
+
+  serviceHost: ${HOST:-127.0.0.1}
+  servicePort: ${PORT:-8080}
+  collector: logging
+
 # HTTP-specific options.
 server:
 
