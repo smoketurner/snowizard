@@ -1,12 +1,10 @@
 package com.smoketurner.snowizard.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-import io.dropwizard.client.JerseyClientBuilder;
-import io.dropwizard.jersey.setup.JerseyEnvironment;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.ResourceHelpers;
-import io.dropwizard.testing.junit.DropwizardAppRule;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.junit.Before;
@@ -14,18 +12,23 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import com.smoketurner.snowizard.application.SnowizardApplication;
 import com.smoketurner.snowizard.application.config.SnowizardConfiguration;
 import com.smoketurner.snowizard.application.resources.IdResource;
 import com.smoketurner.snowizard.application.resources.PingResource;
 import com.smoketurner.snowizard.application.resources.VersionResource;
+import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.testing.ResourceHelpers;
+import io.dropwizard.testing.junit.DropwizardAppRule;
 
 public class SnowizardApplicationTest {
     private final String AGENT = "snowizard-client";
     private final Environment environment = mock(Environment.class);
     private final JerseyEnvironment jersey = mock(JerseyEnvironment.class);
     private final MetricRegistry metrics = mock(MetricRegistry.class);
-    private final HealthCheckRegistry healthChecks = mock(HealthCheckRegistry.class);
+    private final HealthCheckRegistry healthChecks = mock(
+            HealthCheckRegistry.class);
     private final SnowizardApplication application = new SnowizardApplication();
     private final SnowizardConfiguration config = new SnowizardConfiguration();
 
@@ -36,6 +39,7 @@ public class SnowizardApplicationTest {
 
     @Before
     public void setUp() {
+        config.getZipkin().setServiceName("snowizard");
         when(environment.jersey()).thenReturn(jersey);
         when(environment.metrics()).thenReturn(metrics);
         when(environment.healthChecks()).thenReturn(healthChecks);
