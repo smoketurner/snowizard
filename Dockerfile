@@ -1,14 +1,4 @@
-FROM java:openjdk-8-jre-alpine
-
-ARG VERSION="2.0.0-SNAPSHOT"
-
-LABEL name="snowizard" version=$VERSION
-
-ENV DW_DATACENTER_ID 1
-ENV DW_WORKER_ID 1
-ENV PORT 8080
-
-RUN apk add --no-cache curl openjdk8="$JAVA_ALPINE_VERSION"
+FROM openjdk:8-jdk-alpine AS BUILD_IMAGE
 
 WORKDIR /app
 
@@ -27,13 +17,23 @@ COPY . .
 
 RUN ./mvnw clean package -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true && \
     rm snowizard-application/target/original-*.jar && \
-    mv snowizard-application/target/*.jar app.jar && \
-    rm -rf /root/.m2 && \
-    rm -rf snowizard-application/target && \
-    rm -rf snowizard-client/target && \
-    rm -rf snowizard-api/target && \
-    rm -rf snowizard-core/target && \
-    apk del openjdk8
+    mv snowizard-application/target/*.jar app.jar
+
+FROM openjdk:8-jre-alpine
+
+ARG VERSION="2.0.0-SNAPSHOT"
+
+LABEL name="snowizard" version=$VERSION
+
+ENV DW_DATACENTER_ID 1
+ENV DW_WORKER_ID 1
+ENV PORT 8080
+
+RUN apk add --no-cache curl
+
+WORKDIR /app
+COPY --from=BUILD_IMAGE /app/app.jar .
+COPY --from=BUILD_IMAGE /app/config.yml .
 
 HEALTHCHECK --interval=10s --timeout=5s CMD curl --fail http://127.0.0.1:8080/admin/healthcheck || exit 1
 
