@@ -1,9 +1,8 @@
 sudo: false
 dist: trusty
 language: java
-jdk:
-  - oraclejdk8
 before_install:
+  - ulimit -c unlimited -S
   - mvn -N io.takari:maven:wrapper
 after_success:
   - bash .travis_after_success.sh
@@ -11,12 +10,24 @@ cache:
   directories:
     - $HOME/.m2
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+matrix:
+  include:
+    - os: linux
+      jdk: oraclejdk8
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - os: linux
+      jdk: oraclejdk9
+      addons:
+        apt:
+          packages:
+            - oracle-java9-installer
 
 env:
   global:
+    # CI_DEPLOY_USERNAME
     - secure: "02Q1Eez1hF3LWcyFVBFJFDJYuOqUy+Q/jok40XV0DJvjYCo1F54OAcYtOoqd9Rla4xNv/cem7oRuup/OffDXfEJVtAElyE2cj1f7eU+qYcU9S7T3PLKn7Hf2S1BfBCillm2Zu3kLgcmrsOn/JST9amovDICDnb0iuWt4tD+UzadLQbH58u0hdM6Rp5jXidGPtj1puJaJ8xAYQVgSTJG2dfAqZsgtuKqyVCcNbHnTTMav56cPcWht0qbwoah95LdL9y2qdRmecdaQnLeV5EdfLkXqIKqDu3p5sAsmMayL2tidSGRJdnsvo3sbu7sP36THwnJOyo4nUbBEa0Seg4laEGfMRbfS0REKXzKpN3m1feB3P46lbk1U0TnIVqHPey6/mw0tcvbsWvNycsz9cwtZRGnM++noDTxcj8Y02YWDhB3im7OlLXBc46m6ScCCRexiJ0P5dsW+wOHTGtrS+Cp7FWso4XzR13gl7gEnpIzFWqghT/jXlU6t48ZCkBrPgnYvckaGfh3L6A+6rzhCcOb4opxq1D96CytZI2FnWOHEF2WAn6C8vhIQ+A5Y8IzgoxCYtTxF9W2ZUDZG3CAXhokADJ8hIjjLBGHpiXBpUoY8Ah7Iq0mFyue4btjZ6XXmGOIpAcn8moPXs+Tse0KzCrGAcuwU8PuEGoDGjnmw/XCB6qM="
+    # CI_DEPLOY_PASSWORD
     - secure: "NR6wLZEpdfg9U7bbkmuxw/lOfb2ylWFSpOQqYoDjUdeQCyfY5rdS0DcG5CNzHaZJagOOjb0JMPsGkj8aSeLddAtre+G3RYkIWaQ1qAX5dAdXajMOKqJd/8P7hhzzVrGEIG8/fcWB4FsL2pkzeFokb917PkmsJRhWqTWXgx6HbK8oISC2iIaEUcTYckOP3Dbdbha41ztwcY6rKI4S159Trff6X/hbMzbW8monxkPvrsAu2YTgnmIJbHZva4zl1OE5BsZvdcpn2v3vblx/yLJ6X2kwWbBGq8vCVLLfr4gBNikSuvgvluXu8//eeoWATnRMKlXPu6kFw3XNA/YoqTJniIkMGtOJo9aeWHsldeeIKJ4MH/hGOHK7ffTz1eEKLTzD4XuF6uGSUwf2qjawkpNpF2Gyz9thtP/XBLEOeXLdbZ9cHe/0ySy+/GRii613M8DXeP1U9ZyFTq1NxGlS2/DfmwTtOjGxKlFLTWof3ebnwfDO5QjydrOued6PSIo+chA44KzaJCB9hJO9tnJHEufaV7pRZDubsKfiXV12d7OWdzRzDvT8DIsUx10J+eufrv6PUxce18SYHusbR7iXpspXdtP/EfhON9OGlAPx3LWE7L2qj6kkOPkp9MJ7bwz3NI6X9wtnDH7aBCbYJzSGe/aNTQbNOTRiVF/EL5vXYhXzbSM="
