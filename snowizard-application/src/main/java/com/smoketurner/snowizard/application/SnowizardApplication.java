@@ -17,8 +17,6 @@ import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jersey.protobuf.ProtobufBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.federecio.dropwizard.swagger.SwaggerBundle;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class SnowizardApplication extends Application<SnowizardConfiguration> {
 
@@ -37,15 +35,6 @@ public class SnowizardApplication extends Application<SnowizardConfiguration> {
         bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
                 bootstrap.getConfigurationSourceProvider(),
                 new EnvironmentVariableSubstitutor(false)));
-
-        // add Swagger bundle
-        bootstrap.addBundle(new SwaggerBundle<SnowizardConfiguration>() {
-            @Override
-            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(
-                    final SnowizardConfiguration configuration) {
-                return configuration.getSwagger();
-            }
-        });
 
         // add Zipkin bundle
         bootstrap

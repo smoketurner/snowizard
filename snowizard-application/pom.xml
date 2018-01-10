@@ -43,11 +43,6 @@
             <artifactId>dropwizard-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.smoketurner</groupId>
-            <artifactId>dropwizard-swagger</artifactId>
-            <version>1.1.0-1</version>
-        </dependency>
-        <dependency>
             <groupId>com.smoketurner.dropwizard</groupId>
             <artifactId>zipkin-core</artifactId>
             <version>1.2.2-4</version>

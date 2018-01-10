@@ -5,10 +5,9 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.smoketurner.dropwizard.zipkin.LoggingZipkinFactory;
+import com.smoketurner.dropwizard.zipkin.ConsoleZipkinFactory;
 import com.smoketurner.dropwizard.zipkin.ZipkinFactory;
 import io.dropwizard.Configuration;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class SnowizardConfiguration extends Configuration {
     private static final int MAX_ID = 1024;
@@ -25,11 +24,7 @@ public class SnowizardConfiguration extends Configuration {
 
     @Valid
     @NotNull
-    public final SwaggerBundleConfiguration swagger = new SwaggerBundleConfiguration();
-
-    @Valid
-    @NotNull
-    private final ZipkinFactory zipkin = new LoggingZipkinFactory();
+    private final ZipkinFactory zipkin = new ConsoleZipkinFactory();
 
     @JsonProperty("worker_id")
     public int getWorkerId() {
@@ -59,11 +54,6 @@ public class SnowizardConfiguration extends Configuration {
     @JsonProperty("validate_user_agent")
     public void setValidateUserAgent(boolean validateUserAgent) {
         this.validateUserAgent = validateUserAgent;
-    }
-
-    @JsonProperty
-    public SwaggerBundleConfiguration getSwagger() {
-        return swagger;
     }
 
     @JsonProperty

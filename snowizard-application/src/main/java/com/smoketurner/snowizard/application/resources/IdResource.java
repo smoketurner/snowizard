@@ -24,17 +24,10 @@ import com.smoketurner.snowizard.core.IdWorker;
 import com.smoketurner.snowizard.exceptions.InvalidSystemClock;
 import com.smoketurner.snowizard.exceptions.InvalidUserAgentError;
 import io.dropwizard.jersey.caching.CacheControl;
-import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.jersey.params.IntParam;
 import io.dropwizard.jersey.protobuf.ProtocolBufferMediaType;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @Path("/")
-@Api(value = "ids")
 public class IdResource {
 
     private static final Logger LOGGER = LoggerFactory
@@ -84,16 +77,8 @@ public class IdResource {
     @Timed
     @Produces(MediaType.TEXT_PLAIN)
     @CacheControl(mustRevalidate = true, noCache = true, noStore = true)
-    @ApiOperation(value = "Get ID", notes = "Return a single ID",
-                  response = String.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Invalid user-agent",
-                         response = ErrorMessage.class),
-            @ApiResponse(code = 500, message = "Unable to generate ID",
-                         response = ErrorMessage.class) })
     public String getIdAsString(
-            @ApiParam(value = "user-agent",
-                      required = true) @HeaderParam(HttpHeaders.USER_AGENT) final @NotEmpty String agent) {
+            @HeaderParam(HttpHeaders.USER_AGENT) final @NotEmpty String agent) {
         return String.valueOf(getId(agent));
     }
 
@@ -109,16 +94,8 @@ public class IdResource {
     @JSONP(callback = "callback", queryParam = "callback")
     @Produces({ MediaType.APPLICATION_JSON, "application/javascript" })
     @CacheControl(mustRevalidate = true, noCache = true, noStore = true)
-    @ApiOperation(value = "Get ID", notes = "Return a single ID",
-                  response = Id.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Invalid user-agent",
-                         response = ErrorMessage.class),
-            @ApiResponse(code = 500, message = "Unable to generate ID",
-                         response = ErrorMessage.class) })
     public Id getIdAsJSON(
-            @ApiParam(value = "user-agent",
-                      required = true) @HeaderParam(HttpHeaders.USER_AGENT) final @NotEmpty String agent) {
+            @HeaderParam(HttpHeaders.USER_AGENT) final @NotEmpty String agent) {
         return new Id(getId(agent));
     }
 
@@ -135,16 +112,8 @@ public class IdResource {
     @Timed
     @Produces(ProtocolBufferMediaType.APPLICATION_PROTOBUF)
     @CacheControl(mustRevalidate = true, noCache = true, noStore = true)
-    @ApiOperation(value = "Get ID", notes = "Return a single ID",
-                  response = SnowizardResponse.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Invalid user-agent",
-                         response = ErrorMessage.class),
-            @ApiResponse(code = 500, message = "Unable to generate ID",
-                         response = ErrorMessage.class) })
     public SnowizardResponse getIdAsProtobuf(
-            @ApiParam(value = "user-agent",
-                      required = true) @HeaderParam(HttpHeaders.USER_AGENT) final @NotEmpty String agent,
+            @HeaderParam(HttpHeaders.USER_AGENT) final @NotEmpty String agent,
             @QueryParam("count") @DefaultValue("1") final IntParam count) {
 
         final List<Long> ids = new ArrayList<>();
