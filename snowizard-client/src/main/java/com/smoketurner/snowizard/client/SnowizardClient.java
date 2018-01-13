@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriBuilder;
-import org.glassfish.jersey.client.ClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.codahale.metrics.MetricRegistry;
@@ -19,7 +17,6 @@ import com.codahale.metrics.Timer;
 import com.smoketurner.snowizard.api.protos.SnowizardProtos.SnowizardResponse;
 import com.smoketurner.snowizard.client.exceptions.SnowizardClientException;
 import io.dropwizard.jersey.protobuf.ProtocolBufferMediaType;
-import io.dropwizard.jersey.protobuf.ProtocolBufferMessageBodyProvider;
 
 public class SnowizardClient implements Closeable {
 
@@ -29,25 +26,6 @@ public class SnowizardClient implements Closeable {
     private final Timer fetchTimer;
     private final Client client;
     private final URI rootUri;
-
-    /**
-     * @deprecated Please use the {@link SnowizardClientBuilder} instead.
-     */
-    @Deprecated
-    public SnowizardClient(@Nonnull final URI uri) {
-        this(new MetricRegistry(), ClientBuilder.newClient(
-                new ClientConfig(ProtocolBufferMessageBodyProvider.class)),
-                uri);
-    }
-
-    /**
-     * @deprecated Please use the {@link SnowizardClientBuilder} instead.
-     */
-    @Deprecated
-    public SnowizardClient(@Nonnull final Client client,
-            @Nonnull final URI uri) {
-        this(new MetricRegistry(), client, uri);
-    }
 
     /**
      * Constructor

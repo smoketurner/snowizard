@@ -7,17 +7,6 @@ worker_id: ${DW_WORKER_ID:-1}
 # Validate the User-Agent header?
 validate_user_agent: true
 
-# Swagger-specific options.
-swagger:
-
-  resourcePackage: com.smoketurner.snowizard.application.resources
-  title: Snowizard API
-  version: v1
-  description: Snowizard service API
-  contact: jplock@smoketurner.com
-  license: BSD
-  licenseUrl: http://opensource.org/licenses/BSD-3-Clause
-
 # Zipkin-specific options.
 zipkin:
 
