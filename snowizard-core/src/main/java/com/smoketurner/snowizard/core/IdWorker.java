@@ -18,7 +18,6 @@ package com.smoketurner.snowizard.core;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -55,12 +54,12 @@ public class IdWorker {
     private final Counter idsCounter;
     private final Counter exceptionsCounter;
     private final Map<String, Counter> agentCounters = new ConcurrentHashMap<>();
-    private final int workerId;
-    private final int datacenterId;
+    private final long workerId;
+    private final long datacenterId;
     private final boolean validateUserAgent;
 
-    private final AtomicLong lastTimestamp = new AtomicLong(-1L);
-    private final AtomicLong sequence;
+    private long lastTimestamp = -1L;
+    private long sequence = 0L;
 
     /**
      * Constructor
@@ -70,66 +69,56 @@ public class IdWorker {
      * @param workerId
      * @param datacenterId
      */
-    protected IdWorker(final int workerId, final int datacenterId) {
-        this(workerId, datacenterId, 0L, true, new MetricRegistry());
+    protected IdWorker(final long workerId, final long datacenterId) {
+        this(builder(workerId, datacenterId));
     }
 
     /**
      * Constructor
      * 
-     * @param workerId
-     *            Worker ID
-     * @param datacenterId
-     *            Datacenter ID
-     * @param startSequence
-     *            Starting sequence number
-     * @param validateUserAgent
-     *            Whether to validate the User-Agent headers or not
-     * @param registry
-     *            Metric Registry
+     * @param builder
      */
-    private IdWorker(final int workerId, final int datacenterId,
-            final long startSequence, final boolean validateUserAgent,
-            final MetricRegistry registry) {
+    private IdWorker(final Builder builder) {
 
-        exceptionsCounter = registry
+        exceptionsCounter = builder.registry
                 .counter(MetricRegistry.name(IdWorker.class, "exceptions"));
-        idsCounter = registry
+        idsCounter = builder.registry
                 .counter(MetricRegistry.name(IdWorker.class, "ids_generated"));
 
-        if (workerId > MAX_WORKER_ID || workerId < 0) {
+        if (builder.workerId > MAX_WORKER_ID || builder.workerId < 0) {
             exceptionsCounter.inc();
             throw new IllegalArgumentException(String.format(
                     "worker Id can't be greater than %d or less than 0",
                     MAX_WORKER_ID));
         }
-        if (datacenterId > MAX_DATACENTER_ID || datacenterId < 0) {
+        if (builder.datacenterId > MAX_DATACENTER_ID
+                || builder.datacenterId < 0) {
             exceptionsCounter.inc();
             throw new IllegalArgumentException(String.format(
                     "datacenter Id can't be greater than %d or less than 0",
                     MAX_DATACENTER_ID));
         }
 
-        this.workerId = workerId;
-        this.datacenterId = datacenterId;
-        this.validateUserAgent = validateUserAgent;
-        this.registry = registry;
-        this.sequence = new AtomicLong(startSequence);
+        this.workerId = builder.workerId;
+        this.datacenterId = builder.datacenterId;
+        this.validateUserAgent = builder.validateUserAgent;
+        this.registry = builder.registry;
+        this.sequence = builder.startSequence;
 
         LOGGER.info(
                 "worker starting. timestamp left shift {}, datacenter id bits {}, worker id bits {}, sequence bits {}, workerid {}",
                 TIMESTAMP_LEFT_SHIFT, DATACENTER_ID_BITS, WORKER_ID_BITS,
-                SEQUENCE_BITS, workerId);
+                SEQUENCE_BITS, builder.workerId);
     }
 
-    public static final Builder builder(final int workerId,
-            final int datacenterId) {
+    public static final Builder builder(final long workerId,
+            final long datacenterId) {
         return new Builder(workerId, datacenterId);
     }
 
     public static final class Builder {
-        private final int workerId;
-        private final int datacenterId;
+        private final long workerId;
+        private final long datacenterId;
         private long startSequence = 0L;
         private boolean validateUserAgent = true;
         private MetricRegistry registry = new MetricRegistry();
@@ -140,7 +129,7 @@ public class IdWorker {
          * @param workerId
          * @param datacenterId
          */
-        public Builder(final int workerId, final int datacenterId) {
+        public Builder(final long workerId, final long datacenterId) {
             this.workerId = workerId;
             this.datacenterId = datacenterId;
         }
@@ -161,8 +150,7 @@ public class IdWorker {
         }
 
         public IdWorker build() {
-            return new IdWorker(workerId, datacenterId, startSequence,
-                    validateUserAgent, registry);
+            return new IdWorker(this);
         }
     }
 
@@ -195,8 +183,8 @@ public class IdWorker {
      * 
      * @return Worker ID
      */
-    public int getWorkerId() {
-        return this.workerId;
+    public long getWorkerId() {
+        return workerId;
     }
 
     /**
@@ -204,8 +192,8 @@ public class IdWorker {
      * 
      * @return Datacenter ID
      */
-    public int getDatacenterId() {
-        return this.datacenterId;
+    public long getDatacenterId() {
+        return datacenterId;
     }
 
     /**
@@ -218,22 +206,22 @@ public class IdWorker {
     }
 
     /**
-     * Return the current sequence position
+     * Return the current sequence position (visible for testing)
      * 
      * @return Current sequence position
      */
     public long getSequence() {
-        return sequence.get();
+        return sequence;
     }
 
     /**
-     * Set the sequence to a given value
+     * Set the sequence to a given value (visible for testing)
      * 
      * @param value
      *            New sequence value
      */
     public void setSequence(final long value) {
-        this.sequence.set(value);
+        sequence = value;
     }
 
     /**
@@ -245,38 +233,30 @@ public class IdWorker {
      */
     public synchronized long nextId() throws InvalidSystemClock {
         long timestamp = timeGen();
-        long curSequence = 0L;
 
-        final long prevTimestamp = lastTimestamp.get();
-
-        if (timestamp < prevTimestamp) {
+        if (timestamp < lastTimestamp) {
             exceptionsCounter.inc();
             LOGGER.error(
                     "clock is moving backwards. Rejecting requests until {}",
-                    prevTimestamp);
+                    lastTimestamp);
             throw new InvalidSystemClock(String.format(
                     "Clock moved backwards. Refusing to generate id for %d milliseconds",
-                    (prevTimestamp - timestamp)));
+                    (lastTimestamp - timestamp)));
         }
 
-        if (prevTimestamp == timestamp) {
-            curSequence = sequence.incrementAndGet() & SEQUENCE_MASK;
-            if (curSequence == 0) {
-                timestamp = tilNextMillis(prevTimestamp);
+        if (lastTimestamp == timestamp) {
+            sequence = (sequence + 1) & SEQUENCE_MASK;
+            if (sequence == 0) {
+                timestamp = tilNextMillis(lastTimestamp);
             }
         } else {
-            curSequence = 0L;
-            sequence.set(0L);
+            sequence = 0L;
         }
 
-        lastTimestamp.set(timestamp);
+        lastTimestamp = timestamp;
         final long id = ((timestamp - TWEPOCH) << TIMESTAMP_LEFT_SHIFT)
                 | (datacenterId << DATACENTER_ID_SHIFT)
-                | (workerId << WORKER_ID_SHIFT) | curSequence;
-
-        LOGGER.trace(
-                "prevTimestamp = {}, timestamp = {}, sequence = {}, id = {}",
-                prevTimestamp, timestamp, sequence, id);
+                | (workerId << WORKER_ID_SHIFT) | sequence;
 
         return id;
     }
