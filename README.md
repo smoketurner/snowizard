@@ -4,7 +4,7 @@ Snowizard
 [![Coverage Status](https://coveralls.io/repos/smoketurner/snowizard/badge.svg)](https://coveralls.io/r/smoketurner/snowizard)
 [![Maven Central](https://img.shields.io/maven-central/v/com.smoketurner.snowizard/snowizard-parent.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/com.smoketurner.snowizard/snowizard-parent/)
 [![GitHub license](https://img.shields.io/github/license/smoketurner/snowizard.svg?style=flat-square)](https://github.com/smoketurner/snowizard/tree/master)
-[![Become a Patron](https://img.shields.io/badge/Patron-Patreon-red.svg)](https://www.patreon.com/jplock)
+[![Become a Patron](https://img.shields.io/badge/Patron-Patreon-red.svg)](https://www.patreon.com/bePatron?u=9567343)
 
 Snowizard is an HTTP-based service for generating unique ID numbers at high scale with some simple guarantees.
 
