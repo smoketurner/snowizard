@@ -1,0 +1,13 @@
+<configuration>
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="console">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <jsonGeneratorDecorator class="com.smoketurner.snowizard.grpc.util.PrettyPrintingDecorator"/>
+    </encoder>
+  </appender>
+  <appender class="ch.qos.logback.classic.AsyncAppender" name="console-async">
+    <appender-ref ref="console"/>
+  </appender>
+  <root level="info">
+    <appender-ref ref="console-async"/>
+  </root>
+</configuration>

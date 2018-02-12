@@ -32,13 +32,6 @@
     </dependencies>
     
     <build>
-        <extensions>
-            <extension>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>1.5.0.Final</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>

@@ -8,3 +8,5 @@ release.properties
 dependency-reduced-pom.xml
 .settings
 snowizard.jar
+*.crt
+*.key

@@ -19,7 +19,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <file.encoding>UTF-8</file.encoding>
         <javadoc.doclint.none>-Xdoclint:none</javadoc.doclint.none>
-        <dropwizard.version>1.2.2</dropwizard.version>
+        <dropwizard.version>1.2.3</dropwizard.version>
     </properties>
 
     <modules>
@@ -28,6 +28,7 @@
         <module>snowizard-application</module>
         <module>snowizard-core</module>
         <module>snowizard-benchmarks</module>
+        <module>snowizard-grpc</module>
     </modules>
 
     <developers>
@@ -185,7 +186,7 @@
                                 <arg>-XepDisableWarningsInGeneratedCode</arg>
                                 <arg>-Xep:NullAway:ERROR</arg>
                                 <arg>-XepOpt:NullAway:AnnotatedPackages=com.smoketurner.snowizard</arg>
-                                <arg>-XepOpt:NullAway:UnannotatedSubPackages=com.smoketurner.snowizard.api.protos</arg>
+                                <arg>-XepOpt:NullAway:UnannotatedSubPackages=com.smoketurner.snowizard.api.protos,com.smoketurner.snowizard.grpc.protos</arg>
                             </compilerArgs>
                         </configuration>
                         <dependencies>
@@ -268,6 +269,13 @@
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.5.0.Final</version>
+            </extension>
+        </extensions>
         <pluginManagement>
           <plugins>
               <plugin>
