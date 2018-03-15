@@ -4,6 +4,9 @@ datacenter_id: 1
 # Unique Worker ID
 worker_id: 1
 
+zipkin:
+  enabled: false
+
 server:
   type: simple
   applicationContextPath: /
