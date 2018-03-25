@@ -48,7 +48,7 @@ public class SnowizardImpl extends SnowizardGrpc.SnowizardImplBase {
             StreamObserver<SnowizardResponse> responseObserver) {
 
         final long startTime = System.nanoTime();
-        LOGGER.info("Requested to generate 1 id");
+        LOGGER.debug("Requested to generate 1 id");
 
         final SnowizardResponse response;
         try {

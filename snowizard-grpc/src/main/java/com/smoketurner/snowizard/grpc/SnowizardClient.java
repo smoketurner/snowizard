@@ -78,7 +78,15 @@ public class SnowizardClient {
     }
 
     private OptionalLong getId() {
-        return getIds(1).findFirst();
+        LOGGER.debug("Requesting 1 id");
+        final SnowizardResponse response;
+        try {
+            response = blockingStub.getId(null);
+        } catch (StatusRuntimeException e) {
+            LOGGER.warn("RPC failed: {}", e.getStatus());
+            return OptionalLong.empty();
+        }
+        return OptionalLong.of(response.getId(0));
     }
 
     private LongStream getIds(final int count) {
@@ -95,11 +103,12 @@ public class SnowizardClient {
         }
 
         // consume the iterator so the request can be completed
-        final List<SnowizardResponse> responses = ImmutableList
+        final ImmutableList<SnowizardResponse> responses = ImmutableList
                 .copyOf(response);
 
         return responses.stream()
-                .flatMapToLong(r -> r.getIdList().stream().mapToLong(l -> l));
+                .flatMapToLong(r -> r.getIdList().stream().mapToLong(l -> l))
+                .sorted();
     }
 
     @Command(name = "client", description = "Run a GRPC Snowizard client.")
@@ -158,6 +167,7 @@ public class SnowizardClient {
                             for (int j = 0; j < requests / threads; j++) {
                                 final long t = System.nanoTime();
                                 client.getIds(fetch).close();
+                                // client.getId();
                                 recorder.record(t);
                             }
                         });

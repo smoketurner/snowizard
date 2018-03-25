@@ -46,7 +46,7 @@ public final class SnowizardException extends WebApplicationException {
     /**
      * Constructor
      *
-     * @param code
+     * @param status
      *            Status code to return
      * @param message
      *            Error message to return

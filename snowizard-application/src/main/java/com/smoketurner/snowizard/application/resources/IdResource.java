@@ -51,6 +51,7 @@ public class IdResource {
      *            User Agent
      * @return generated ID
      * @throws SnowizardException
+     *             if invalid agent or clock
      */
     public long getId(final String agent) {
         try {

@@ -8,15 +8,15 @@ package snowizard;
 
 import "google/protobuf/empty.proto";
 
-service Snowizard {
-  rpc GetId (google.protobuf.Empty) returns (SnowizardResponse);
-  rpc GetIds (SnowizardRequest) returns (stream SnowizardResponse);
-}
-
 message SnowizardRequest {
   int32 count = 1;
 }
 
 message SnowizardResponse {
   repeated int64 id = 1;
+}
+
+service Snowizard {
+  rpc GetId (google.protobuf.Empty) returns (SnowizardResponse);
+  rpc GetIds (SnowizardRequest) returns (stream SnowizardResponse);
 }
