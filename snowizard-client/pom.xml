@@ -33,7 +33,7 @@
     <parent>
         <groupId>com.smoketurner.snowizard</groupId>
         <artifactId>snowizard-parent</artifactId>
-        <version>2.0.1-SNAPSHOT</version>
+        <version>2.0.1</version>
     </parent>
 
     <artifactId>snowizard-client</artifactId>
