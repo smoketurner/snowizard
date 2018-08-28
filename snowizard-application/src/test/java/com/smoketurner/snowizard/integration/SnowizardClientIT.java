@@ -56,6 +56,10 @@ public class SnowizardClientIT {
     final SnowizardClientBuilder builder = new SnowizardClientBuilder(RULE.getEnvironment());
     final SnowizardClientConfiguration configuration = new SnowizardClientConfiguration();
     configuration.setUri(URI.create("http://127.0.0.1:" + RULE.getLocalPort()));
+    configuration.setTimeout(Duration.seconds(1));
+    configuration.setRetries(3);
+    configuration.setGzipEnabled(true);
+    configuration.setKeepAlive(Duration.milliseconds(500));
     client = builder.build(configuration);
   }
 

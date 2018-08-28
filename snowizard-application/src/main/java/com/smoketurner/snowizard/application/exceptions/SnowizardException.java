@@ -26,10 +26,10 @@
  */
 package com.smoketurner.snowizard.application.exceptions;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import org.jetbrains.annotations.Nullable;
 
 @Immutable
 public final class SnowizardException extends WebApplicationException {

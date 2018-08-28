@@ -66,6 +66,6 @@ public class IdTest {
 
   @Test
   public void testHashCode() {
-    assertThat(id.hashCode()).isEqualTo(1548657);
+    assertThat(id.hashCode()).isEqualTo(1265);
   }
 }

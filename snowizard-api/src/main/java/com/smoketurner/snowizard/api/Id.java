@@ -29,7 +29,6 @@ package com.smoketurner.snowizard.api;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
 import io.dropwizard.jackson.JsonSnakeCase;
 import java.util.Objects;
 import javax.annotation.concurrent.Immutable;
@@ -96,16 +95,16 @@ public final class Id {
     }
 
     final Id other = (Id) obj;
-    return Objects.equals(id, other.id) && Objects.equals(idStr, other.idStr);
+    return Objects.equals(id, other.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idStr);
+    return Objects.hash(id);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("id", id).add("idStr", idStr).toString();
+    return "Id{id=" + id + ", idStr=" + idStr + "}";
   }
 }

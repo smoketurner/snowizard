@@ -211,7 +211,7 @@ public class IdWorker {
    *
    * @return Current sequence position
    */
-  public long getSequence() {
+  public synchronized long getSequence() {
     return sequence;
   }
 
@@ -220,7 +220,7 @@ public class IdWorker {
    *
    * @param value New sequence value
    */
-  public void setSequence(final long value) {
+  public synchronized void setSequence(final long value) {
     sequence = value;
   }
 

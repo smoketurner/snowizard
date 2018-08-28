@@ -30,7 +30,6 @@ import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.jersey.protobuf.ProtocolBufferMessageBodyProvider;
 import io.dropwizard.setup.Environment;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
 
 public class SnowizardClientBuilder {
@@ -41,7 +40,7 @@ public class SnowizardClientBuilder {
    *
    * @param environment Environment
    */
-  public SnowizardClientBuilder(@Nonnull final Environment environment) {
+  public SnowizardClientBuilder(final Environment environment) {
     this.environment = Objects.requireNonNull(environment);
   }
 
@@ -51,7 +50,7 @@ public class SnowizardClientBuilder {
    * @param configuration Configuration to use for the client
    * @return new SnowizardClient
    */
-  public SnowizardClient build(@Nonnull final SnowizardClientConfiguration configuration) {
+  public SnowizardClient build(final SnowizardClientConfiguration configuration) {
     final Client client =
         new JerseyClientBuilder(environment)
             .using(configuration)
@@ -70,7 +69,7 @@ public class SnowizardClientBuilder {
    * @return new SnowizardClient
    */
   public SnowizardClient build(
-      @Nonnull final SnowizardClientConfiguration configuration, @Nonnull final Client client) {
+      final SnowizardClientConfiguration configuration, final Client client) {
     return new SnowizardClient(environment.metrics(), client, configuration.getUri());
   }
 }

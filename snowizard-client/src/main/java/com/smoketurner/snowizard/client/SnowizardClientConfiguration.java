@@ -28,7 +28,6 @@ package com.smoketurner.snowizard.client;
 
 import io.dropwizard.client.JerseyClientConfiguration;
 import java.net.URI;
-import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
 public class SnowizardClientConfiguration extends JerseyClientConfiguration {
@@ -39,7 +38,7 @@ public class SnowizardClientConfiguration extends JerseyClientConfiguration {
     return uri;
   }
 
-  public void setUri(@Nonnull final URI uri) {
+  public void setUri(final URI uri) {
     this.uri = uri;
   }
 }

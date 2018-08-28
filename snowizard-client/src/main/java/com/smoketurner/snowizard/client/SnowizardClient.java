@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriBuilder;
@@ -60,10 +59,7 @@ public class SnowizardClient implements Closeable {
    * @param client Jersey client
    * @param uri API endpoint
    */
-  public SnowizardClient(
-      @Nonnull final MetricRegistry registry,
-      @Nonnull final Client client,
-      @Nonnull final URI uri) {
+  public SnowizardClient(final MetricRegistry registry, final Client client, final URI uri) {
     this.client = Objects.requireNonNull(client);
     this.rootUri = Objects.requireNonNull(uri);
     this.fetchTimer = registry.timer(name(SnowizardClient.class, "fetch"));

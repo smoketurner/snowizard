@@ -29,11 +29,11 @@ package com.smoketurner.snowizard.application.resources;
 import com.google.common.annotations.VisibleForTesting;
 import io.dropwizard.jersey.caching.CacheControl;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.jetbrains.annotations.NotNull;
 
 @Path("/version")
 public class VersionResource {
@@ -51,7 +51,7 @@ public class VersionResource {
    * @param version Version to expose in the endpoint
    */
   @VisibleForTesting
-  public VersionResource(@Nonnull final String version) {
+  public VersionResource(@NotNull final String version) {
     this.version = Objects.requireNonNull(version);
   }
 
