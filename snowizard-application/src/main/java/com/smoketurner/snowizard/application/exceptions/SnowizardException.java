@@ -26,12 +26,10 @@
  */
 package com.smoketurner.snowizard.application.exceptions;
 
-import javax.annotation.concurrent.Immutable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import org.jetbrains.annotations.Nullable;
 
-@Immutable
 public final class SnowizardException extends WebApplicationException {
 
   private static final long serialVersionUID = 1L;

@@ -28,6 +28,7 @@ package com.smoketurner.snowizard.grpc.util;
 
 import com.smoketurner.snowizard.grpc.stats.IntervalAdder;
 import com.smoketurner.snowizard.grpc.stats.Recorder;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.grpc.Metadata;
 import io.grpc.ServerStreamTracer;
 import io.grpc.Status;
@@ -39,7 +40,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import net.logstash.logback.marker.LogstashMarker;
 import net.logstash.logback.marker.Markers;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
