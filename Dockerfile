@@ -25,7 +25,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-FROM openjdk:8-jdk-alpine AS BUILD_IMAGE
+FROM openjdk:11-jdk-slim AS BUILD_IMAGE
 
 WORKDIR /app
 
@@ -46,7 +46,7 @@ RUN ./mvnw clean package -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.sour
     rm snowizard-application/target/original-*.jar && \
     mv snowizard-application/target/*.jar app.jar
 
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-slim
 
 ARG VERSION="2.0.0-SNAPSHOT"
 

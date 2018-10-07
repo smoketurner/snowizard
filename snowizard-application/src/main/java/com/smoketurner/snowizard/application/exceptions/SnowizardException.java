@@ -26,7 +26,7 @@
  */
 package com.smoketurner.snowizard.application.exceptions;
 
-import edu.umd.cs.findbugs.annotations.Nullable;
+import javax.annotation.Nullable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 

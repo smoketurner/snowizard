@@ -73,8 +73,8 @@ public class IdWorker {
    *
    * <p>Used by the tests
    *
-   * @param workerId
-   * @param datacenterId
+   * @param workerId Worker ID
+   * @param datacenterId Data center ID
    */
   protected IdWorker(final long workerId, final long datacenterId) {
     this(builder(workerId, datacenterId));
@@ -131,8 +131,8 @@ public class IdWorker {
     /**
      * Constructor
      *
-     * @param workerId
-     * @param datacenterId
+     * @param workerId Worker ID
+     * @param datacenterId Data center ID
      */
     public Builder(final long workerId, final long datacenterId) {
       this.workerId = workerId;
