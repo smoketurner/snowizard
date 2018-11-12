@@ -32,7 +32,7 @@
     <parent>
         <groupId>com.smoketurner.dropwizard</groupId>
         <artifactId>dropwizard-pom</artifactId>
-        <version>0.0.14</version>
+        <version>0.0.17</version>
     </parent>
 
     <groupId>com.smoketurner.snowizard</groupId>
@@ -93,7 +93,7 @@
             <extension>
                 <groupId>kr.motd.maven</groupId>
                 <artifactId>os-maven-plugin</artifactId>
-                <version>1.6.0</version>
+                <version>1.6.1</version>
             </extension>
         </extensions>
         <pluginManagement>
