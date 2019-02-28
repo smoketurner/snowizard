@@ -40,7 +40,7 @@
     <name>Snowizard GRPC</name>
 
     <properties>
-        <grpc.version>1.18.0</grpc.version>
+        <grpc.version>1.19.0</grpc.version>
         <netty.version>4.1.30.Final</netty.version>
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.source>11</maven.compiler.source>
